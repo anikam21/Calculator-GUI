@@ -9,17 +9,30 @@ class window(Tk):
         self.resizable(0, 0)
         self.title('CALCULATOR')
         self.expression = StringVar()
-        self.create_frame()
-        self.create_widgets()
-        self.calculator_btns()
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=1)
+        self.columnconfigure(2, weight=1)
+        self.columnconfigure(3, weight=1)
+
+        self.output_expression = "0"
+        self.current_expression = "0"
+        
+        self.display_frame = self.create_frame()
+        self.buttons_frame = self.create_button_frame()
 
     def create_frame(self):
-        ui_frame = Frame(self, width=312, height=50, bd=0, highlightbackground="black", 
+        input_frame = Frame(self, width=312, height=50, bd=0, highlightbackground="black", 
                             highlightcolor="red", highlightthickness=2)
-        ui_frame.grid(row = 0, column = 0, columnspan = 3, padx = 1, pady = 1)
+        input_frame.pack(expand=True, fill="both")
+        return input_frame
 
+    def create_button_frame(self):
         btns_frame = Frame(self, width=312, height=272.5, bg="grey")
-        btns_frame.grid()
+        btns_frame.pack(expand=True, fill="both")
+        return btns_frame
+
+    def create_display_frame(self):
+        output_label = Label.self.display_fr
 
     def create_widgets(self):
         padding = {'padx': 5,  'pady': 5}
@@ -29,15 +42,18 @@ class window(Tk):
         expression_field.grid(column=1, row=0, **padding)
         expression_field.focus()
 
-    def calculator_btns(btns_frame):
+    def calculator_btns(self, btns_frame):
         padding = {'padx': 1,  'pady': 1}
         # first row
-        clear = Button(btns_frame, text = "C", fg = "black", width = 32, height = 3, 
-                            bd = 0, bg = "#eee", cursor = "hand2", command = lambda: clear_button())
-        clear.grid(row = 0, column = 0, columnspan = 3, **padding)
-        divide = Button(btns_frame, text = "/", fg = "black", width = 10, height = 3, 
-                            bd = 0, bg = "#eee", cursor = "hand2", command = lambda: click_button("/"))
-        divide.grid(row = 0, column = 3, **padding)
+        clear = Button(btns_frame, text = 'C', command=lambda:clear_button())
+        # clear = Button(btns_frame, text = "C", fg = "black", width = 32, height = 3, 
+        #                     bd = 0, bg = "#eee", cursor = "hand2", command = lambda: clear_button())
+        clear.grid(row = 0, column = 1, columnspan = 2, **padding)
+        
+        # divide = Button(btns_frame, text = "/", fg = "black", width = 10, height = 3, 
+        #                     bd = 0, bg = "#eee", cursor = "hand2", command = lambda: click_button("/", self.expression))
+        # divide = Button(btns_frame, text = '/', command=lambda:click_button())
+        # divide.grid(row = 2, column = 0, **padding)
 
         # second row
         # seven = Button(btns_frame, text = "7", fg = "black", width = 10, height = 3, 

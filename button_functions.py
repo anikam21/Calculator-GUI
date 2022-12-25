@@ -4,30 +4,50 @@ from tkinter import  ttk
 expression = ""
 # equation = StringVar()
 
-def click_button(num, equation):
+def click_button(num):
     """Function to click calculator buttons"""
-    global expression 
-    expression  = expression  + str(num)
-    equation.set(expression)
+    print(num)
 
 
-def equalpress(equation):
+def equalpress():
     """Function to output the answer"""
-    try:
-        global expression 
-        result = str(eval(expression))
-        equation.set(result)
-        expression = ""
-    except:
-        equation.set("ERROR")
-        expression = ""
+    print("equal")
 
 # Function to clear the contents
 # of text entry box
-def clear_button(equation):
-    global expression
-    expression = ""
-    equation.set("")
+def clear_button():
+    print("clear")
+
+# from tkinter import *
+# from tkinter import  ttk
+
+# expression = ""
+# # equation = StringVar()
+
+# def click_button(num, equation):
+#     """Function to click calculator buttons"""
+#     global expression 
+#     expression  = expression  + str(num)
+#     equation.set(expression)
+
+
+# def equalpress(equation):
+#     """Function to output the answer"""
+#     try:
+#         global expression 
+#         result = str(eval(expression))
+#         equation.set(result)
+#         expression = ""
+#     except:
+#         equation.set("ERROR")
+#         expression = ""
+
+# # Function to clear the contents
+# # of text entry box
+# def clear_button(equation):
+#     global expression
+#     expression = ""
+#     equation.set("")
     
 # def configure_gui(gui):
 #     """GUI settings"""
