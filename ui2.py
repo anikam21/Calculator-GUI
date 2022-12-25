@@ -2,108 +2,90 @@ from tkinter import *
 from tkinter import ttk
 from button_functions import *
 
+LIGHT_GREY = '#F5F5F5'
+LABEL_COLOR = '#25265E'
+WHITE = '#FFFFFF'
+OFF_WHITE = '#F8FAFF'
+LIGHT_BLUE = '#CCEDFF'
+
+SMALL_FONT_SIZE = ('Arial', 16)
+LARGE_FONT_SIZE = ('Arial', 40)
+DIGIT_FONT_STYLE = ('Arial', 24, 'bold')
+DEFAULT_FONT_STYLE = ('Arial', 20)
+
 class window(Tk):
     def __init__(self):
         super().__init__()
-        self.geometry("312x324")
+        self.geometry('375x667')
         self.resizable(0, 0)
         self.title('CALCULATOR')
-        self.expression = StringVar()
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=1)
-        self.columnconfigure(2, weight=1)
-        self.columnconfigure(3, weight=1)
 
-        self.output_expression = "0"
-        self.current_expression = "0"
+        self.output_expression = '0'
+        self.current_expression = '0'
         
         self.display_frame = self.create_frame()
+        self.output_label, self.current_label = self.create_display_label()
+
+        self.digits = {
+            7:(1,1), 8:(1,2), 9:(1,3),
+            4:(2,1), 5:(2,2), 6:(2,3),
+            1:(3,1), 2:(3,2), 3:(3,3),
+            0:(4,2), '.':(4,1)
+        }
+        self.operations = {'/': '\u00F7',
+                            '*': '\u00D7', '-': '-', '+': '+'}
+
         self.buttons_frame = self.create_button_frame()
+        self.create_digit_btns()
+        self.create_operator_btns()
+        self.create_clear_btn()
+        self.create_equals_btn()
 
     def create_frame(self):
-        input_frame = Frame(self, width=312, height=50, bd=0, highlightbackground="black", 
-                            highlightcolor="red", highlightthickness=2)
-        input_frame.pack(expand=True, fill="both")
-        return input_frame
+        ui_frame = Frame(self, height=221, bg=LIGHT_GREY)
+        ui_frame.pack(expand=True, fill="both")
+        return ui_frame
 
     def create_button_frame(self):
-        btns_frame = Frame(self, width=312, height=272.5, bg="grey")
+        btns_frame = Frame(self)
         btns_frame.pack(expand=True, fill="both")
         return btns_frame
 
-    def create_display_frame(self):
-        output_label = Label.self.display_fr
+    def create_display_label(self):
+        output_label = Label(self.display_frame, text=self.output_expression, anchor=E, 
+                                bg=LIGHT_GREY, fg=LABEL_COLOR, padx=24, font=SMALL_FONT_SIZE)
+        output_label.pack(expand=True, fill="both")
 
-    def create_widgets(self):
-        padding = {'padx': 5,  'pady': 5}
+        current_label = Label(self.display_frame, text=self.current_expression, anchor=E, 
+                                bg=LIGHT_GREY, fg=LABEL_COLOR, padx=24, font=LARGE_FONT_SIZE)
+        current_label.pack(expand=True, fill="both")
+        return  output_label, current_label
 
-        # Entry
-        expression_field = ttk.Entry(self, textvariable=self.expression)
-        expression_field.grid(column=1, row=0, **padding)
-        expression_field.focus()
+    def create_digit_btns(self):
+        digits_dict = self.digits.items()
+        for digit,grid_value in digits_dict:
+            button = Button(self.buttons_frame, text=str(digit), bg=WHITE, fg=LABEL_COLOR, 
+                            font=DIGIT_FONT_STYLE, borderwidth=0)
+            button.grid(row=grid_value[0], column=grid_value[1], sticky=NSEW)
 
-    def calculator_btns(self, btns_frame):
-        padding = {'padx': 1,  'pady': 1}
-        # first row
-        clear = Button(btns_frame, text = 'C', command=lambda:clear_button())
-        # clear = Button(btns_frame, text = "C", fg = "black", width = 32, height = 3, 
-        #                     bd = 0, bg = "#eee", cursor = "hand2", command = lambda: clear_button())
-        clear.grid(row = 0, column = 1, columnspan = 2, **padding)
-        
-        # divide = Button(btns_frame, text = "/", fg = "black", width = 10, height = 3, 
-        #                     bd = 0, bg = "#eee", cursor = "hand2", command = lambda: click_button("/", self.expression))
-        # divide = Button(btns_frame, text = '/', command=lambda:click_button())
-        # divide.grid(row = 2, column = 0, **padding)
+    def create_operator_btns(self):
+        i = 0
+        operator_dict = self.operations.items()
+        for operator,symbol in operator_dict:
+            button = Button(self.buttons_frame, text=symbol, bg=OFF_WHITE, fg=LABEL_COLOR, 
+                            font=DEFAULT_FONT_STYLE, borderwidth=0)
+            button.grid(row=i, column=4, sticky=NSEW)
+            i+=1
 
-        # second row
-        # seven = Button(btns_frame, text = "7", fg = "black", width = 10, height = 3, 
-        #                     bd = 0, bg = "#fff", cursor = "hand2", command = lambda: click_button(7))
-        # seven.grid(row = 1, column = 0, padx = 1, pady = 1)
-        
-        # eight = Button(btns_frame, text = "8", fg = "black", width = 10, height = 3, 
-        #                     bd = 0, bg = "#fff", cursor = "hand2", command = lambda: click_button(8))
-        # eight.grid(row = 1, column = 1, padx = 1, pady = 1)
-        
-        # nine = Button(btns_frame, text = "9", fg = "black", width = 10, height = 3, 
-        #                     bd = 0, bg = "#fff", cursor = "hand2", command = lambda: click_button(9))
-        # nine.grid(row = 1, column = 2, padx = 1, pady = 1)
-        # multiply = Button(btns_frame, text = "*", fg = "black", width = 10, height = 3, 
-        #                     bd = 0, bg = "#eee", cursor = "hand2", command = lambda: click_button("*"))
-        # multiply.grid(row = 1, column = 3, padx = 1, pady = 1)
+    def create_clear_btn(self):
+        button = Button(self.buttons_frame, text='C', bg=OFF_WHITE, fg=LABEL_COLOR, 
+                            font=DEFAULT_FONT_STYLE, borderwidth=0)
+        button.grid(row=0, column=1, columnspan=3, sticky=NSEW)
 
-        # # third row
-        # four = Button(btns_frame, text = "4", fg = "black", width = 10, height = 3, 
-        #                 bd = 0, bg = "#fff", cursor = "hand2", command = lambda: click_button(4))
-        # four.grid(row = 2, column = 0, padx = 1, pady = 1)
-        
-        # five = Button(btns_frame, text = "5", fg = "black", width = 10, height = 3, 
-        #                 bd = 0, bg = "#fff", cursor = "hand2", command = lambda: click_button(5))
-        # five.grid(row = 2, column = 1, padx = 1, pady = 1)
-        
-        # six = Button(btns_frame, text = "6", fg = "black", width = 10, height = 3, 
-        #                 bd = 0, bg = "#fff", cursor = "hand2", command = lambda: click_button(6))
-        # six.grid(row = 2, column = 2, padx = 1, pady = 1)
-        
-        # minus = Button(btns_frame, text = "-", fg = "black", width = 10, height = 3, 
-        #                 bd = 0, bg = "#eee", cursor = "hand2", command = lambda: click_button("-"))
-        # minus.grid(row = 2, column = 3, padx = 1, pady = 1)
-        
-        # # fourth row
-        # one = Button(btns_frame, text = "1", fg = "black", width = 10, height = 3, 
-        #                 bd = 0, bg = "#fff", cursor = "hand2", command = lambda: click_button(1))
-        # one.grid(row = 3, column = 0, padx = 1, pady = 1)
-        
-        # two = Button(btns_frame, text = "2", fg = "black", width = 10, height = 3, 
-        #                 bd = 0, bg = "#fff", cursor = "hand2", command = lambda: click_button(2))
-        # two.grid(row = 3, column = 1, padx = 1, pady = 1)
-        
-        # three = Button(btns_frame, text = "3", fg = "black", width = 10, height = 3, 
-        #                 bd = 0, bg = "#fff", cursor = "hand2", command = lambda: click_button(3))
-        # three.grid(row = 3, column = 2, padx = 1, pady = 1)
-        
-        # plus = Button(btns_frame, text = "+", fg = "black", width = 10, height = 3, 
-        #                 bd = 0, bg = "#eee", cursor = "hand2", command = lambda: click_button("+"))
-        # plus.grid(row = 3, column = 3, padx = 1, pady = 1)
+    def create_equals_btn(self):
+        button = Button(self.buttons_frame, text='=', bg=LIGHT_BLUE, fg=LABEL_COLOR, 
+                            font=SMALL_FONT_SIZE , borderwidth=0)
+        button.grid(row=4, column=3, columnspan=2, sticky=NSEW)
 
 
 if __name__ == "__main__":
